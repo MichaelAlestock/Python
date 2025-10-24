@@ -9,10 +9,6 @@ def ScriptRoot():
     return Path(__file__).resolve().parent
 
 
-wildcard = f"{ScriptRoot()}\\*.env"
-path_wildcard = glob(wildcard)
-
-
 class SecretManager:
     @staticmethod
     def get_next_argv(prompt):
@@ -22,45 +18,54 @@ class SecretManager:
         except StopIteration:
             return input(prompt)
 
-    def HasMatch():
-        if path_wildcard:
-            return True
-        else:
-            return False
+    @staticmethod
+    def GetMatchedFiles():
+        wildcard = f"{ScriptRoot()}\\*.env"
+        return glob(wildcard)
 
+    @staticmethod
     def GetMatchedFile():
-        for matched_file in path_wildcard:
-            return matched_file
+        matches = SecretManager.GetMatchedFiles()
+        return matches[0] if matches else False
 
     def PrintMatch():
-        print(SecretManager.HasMatch())
+        print(SecretManager.GetMatchedFile())
 
-    def GetSecretInformation():
+    def LoadSecretInformation():
         load_dotenv(SecretManager.GetMatchedFile())
-        ikey = os.getenv("IKEY")
-        skey = os.getenv("SKEY")
-        host = os.getenv("HOST")
 
-        print(f"IKEY: [{ikey}]\nSKEY: [{skey}]\nHOST: [{host}]")
+        secret_dict = {
+            "ikey": os.getenv("IKEY", ""),
+            "skey": os.getenv("SKEY", ""),
+            "host": os.getenv("HOST", ""),
+        }
+
+        return secret_dict
+
+    def PrintSecretInformation():
+        load_env = SecretManager.LoadSecretInformation()
+        print(
+            f"IKEY: [{load_env['ikey']}]\nSKEY: [{load_env['skey']}]\nHOST: [{load_env['host']}]"
+        )
 
     def WriteSecret():
         # check file existence
         print("Checking if environment file exists...")
-        if not SecretManager.HasMatch():
+        if not SecretManager.GetMatchedFile():
             print("No environment file found, create a new one.")
             file_path = SecretManager.get_next_argv(
                 "Enter a name for your secrets file: "
             )
             new_file_path = Path.joinpath(ScriptRoot(), file_path)
             Path(f"{new_file_path}.env").touch()
-        elif SecretManager.HasMatch():
+        elif SecretManager.GetMatchedFile():
             print(f"{SecretManager.GetMatchedFile()} was found.")
 
             confirm_choice = input("Check secrets now? [y/N] ")
 
             if confirm_choice == "Y" or confirm_choice == "y":
                 print("Outputting your secrets.")
-                SecretManager.GetSecretInformation()
+                SecretManager.PrintSecretInformation()
                 print("Exiting...")
                 exit(0)
             elif confirm_choice == "N" or confirm_choice == "n" or confirm_choice == "":
