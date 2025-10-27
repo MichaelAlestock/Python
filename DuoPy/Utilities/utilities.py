@@ -2,5 +2,7 @@
 from pathlib import Path
 
 
-def ScriptRoot():
-    return Path(__file__).resolve().parent
+class utilities:
+
+    def script_root():
+        return Path(__file__).resolve().parent
