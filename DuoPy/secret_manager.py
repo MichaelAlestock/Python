@@ -47,7 +47,7 @@ class secret_manager:
             f"IKEY: [{load_env['ikey']}]\nSKEY: [{load_env['skey']}]\nHOST: [{load_env['host']}]"
         )
 
-    def WriteSecret():
+    def write_secret_information():
         # check file existence
         print("Checking if environment file exists...")
         if not secret_manager.get_matched_file():
