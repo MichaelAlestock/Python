@@ -4,12 +4,11 @@ from pathlib import Path
 from glob import glob
 from dotenv import load_dotenv
 
+# my libs
+from Utilities.utilities import *
 
-def ScriptRoot():
-    return Path(__file__).resolve().parent
 
-
-class SecretManager:
+class secret_manager:
     @staticmethod
     def get_next_argv(prompt):
         argv_iter = iter(sys.argv[1:])
@@ -19,20 +18,20 @@ class SecretManager:
             return input(prompt)
 
     @staticmethod
-    def GetMatchedFiles():
+    def get_matched_files():
         wildcard = f"{ScriptRoot()}\\*.env"
         return glob(wildcard)
 
     @staticmethod
-    def GetMatchedFile():
-        matches = SecretManager.GetMatchedFiles()
+    def get_matched_file():
+        matches = secret_manager.get_matched_files()
         return matches[0] if matches else False
 
-    def PrintMatch():
-        print(SecretManager.GetMatchedFile())
+    def print_match():
+        print(secret_manager.get_matched_file())
 
-    def LoadSecretInformation():
-        load_dotenv(SecretManager.GetMatchedFile())
+    def load_secret_information():
+        load_dotenv(secret_manager.get_matched_file())
 
         secret_dict = {
             "ikey": os.getenv("IKEY", ""),
@@ -42,8 +41,8 @@ class SecretManager:
 
         return secret_dict
 
-    def PrintSecretInformation():
-        load_env = SecretManager.LoadSecretInformation()
+    def print_secret_information():
+        load_env = secret_manager.load_secret_information()
         print(
             f"IKEY: [{load_env['ikey']}]\nSKEY: [{load_env['skey']}]\nHOST: [{load_env['host']}]"
         )
@@ -51,30 +50,30 @@ class SecretManager:
     def WriteSecret():
         # check file existence
         print("Checking if environment file exists...")
-        if not SecretManager.GetMatchedFile():
+        if not secret_manager.get_matched_file():
             print("No environment file found, create a new one.")
-            file_path = SecretManager.get_next_argv(
+            file_path = secret_manager.get_next_argv(
                 "Enter a name for your secrets file: "
             )
             new_file_path = Path.joinpath(ScriptRoot(), file_path)
             Path(f"{new_file_path}.env").touch()
-        elif SecretManager.GetMatchedFile():
-            print(f"{SecretManager.GetMatchedFile()} was found.")
+        elif secret_manager.GetMatchedFile():
+            print(f"{secret_manager.GetMatchedFile()} was found.")
 
             confirm_choice = input("Check secrets now? [y/N] ")
 
             if confirm_choice == "Y" or confirm_choice == "y":
                 print("Outputting your secrets.")
-                SecretManager.PrintSecretInformation()
+                secret_manager.print_secret_information()
                 print("Exiting...")
                 exit(0)
             elif confirm_choice == "N" or confirm_choice == "n" or confirm_choice == "":
                 print("Exiting...")
                 exit(0)
 
-        ikey = SecretManager.get_next_argv("Enter your integration key: ")
-        skey = SecretManager.get_next_argv("Enter your secret key: ")
-        hostname = SecretManager.get_next_argv("Enter the hostname: ")
+        ikey = secret_manager.get_next_argv("Enter your integration key: ")
+        skey = secret_manager.get_next_argv("Enter your secret key: ")
+        hostname = secret_manager.get_next_argv("Enter the hostname: ")
 
         print(f"Environment file successfully created in [{ScriptRoot()}].")
 
