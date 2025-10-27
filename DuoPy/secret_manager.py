@@ -5,7 +5,7 @@ from glob import glob
 from dotenv import load_dotenv
 
 # my libs
-from Utilities.utilities import *
+from Utilities.utilities import utilities
 
 
 class secret_manager:
@@ -19,7 +19,7 @@ class secret_manager:
 
     @staticmethod
     def get_matched_files():
-        wildcard = f"{ScriptRoot()}\\*.env"
+        wildcard = f"{utilities.script_root()}\\*.env"
         return glob(wildcard)
 
     @staticmethod
@@ -55,7 +55,7 @@ class secret_manager:
             file_path = secret_manager.get_next_argv(
                 "Enter a name for your secrets file: "
             )
-            new_file_path = Path.joinpath(ScriptRoot(), file_path)
+            new_file_path = Path.joinpath(utilities.script_root(), file_path)
             Path(f"{new_file_path}.env").touch()
         elif secret_manager.GetMatchedFile():
             print(f"{secret_manager.GetMatchedFile()} was found.")
@@ -75,7 +75,7 @@ class secret_manager:
         skey = secret_manager.get_next_argv("Enter your secret key: ")
         hostname = secret_manager.get_next_argv("Enter the hostname: ")
 
-        print(f"Environment file successfully created in [{ScriptRoot()}].")
+        print(f"Environment file successfully created in [{utilities.script_root()}].")
 
         with open(f"{new_file_path}.env", mode="w+t") as file:
             file.write(f"IKEY='{ikey}'\n" f"SKEY='{skey}'\n" f"HOST='{hostname}'")
