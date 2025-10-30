@@ -1,7 +1,7 @@
 import duo_client
 from secret_manager import SecretManager
 from Users import Users
-from datetime import datetime
+from Utilities.utilities import Utilities
 
 """
 # TODO: Flesh out UserManager class
@@ -12,6 +12,8 @@ from datetime import datetime
 
 class UserManager:
 
+    # internal function to create and return a Duo Admin client object
+    # used to by all other functions to make API calls
     @staticmethod
     def client_admin():
         load_env = SecretManager.load_secret_information()
@@ -31,32 +33,30 @@ class UserManager:
             # TODO: Fix 401 error | caused by invalid credentials.. need them to test
         )
 
-    def convert_to_dt(date_item):
-        if type(date_item) is type(None):
-            return "No Date Info Found"
-        else:
-            return datetime.fromtimestamp(date_item).strftime("%m/%d/%Y @ %I:%M %p")
-
     def get_users():
-        app = UserManager.client_admin()
-        response = app.get_users()
+        try:
+            app = UserManager.client_admin()
+            response = app.get_users()
 
-        user_list = []
-        for user in response:
-            user_list.append(
-                Users(
-                    realname=user["realname"],
-                    username=user["username"],
-                    email_address=user["email"],
-                    status=user["status"],
-                    created_on=UserManager.convert_to_dt(user["created"]),
-                    last_directory_sync=UserManager.convert_to_dt(
-                        user["last_directory_sync"]
-                    ),
-                    last_login=UserManager.convert_to_dt(user["last_login"]),
+            user_list = []
+            for user in response:
+                user_list.append(
+                    Users(
+                        realname=user["realname"],
+                        username=user["username"],
+                        email_address=user["email"],
+                        status=user["status"],
+                        created_on=Utilities.convert_to_dt(user["created"]),
+                        last_directory_sync=Utilities.convert_to_dt(
+                            user["last_directory_sync"]
+                        ),
+                        last_login=Utilities.convert_to_dt(user["last_login"]),
+                    )
                 )
-            )
-        return user_list
+            return user_list
+        except Exception as generic_error:
+            generic_error.add_note("No results returned.")
+            raise
 
     def get_user_by_username():
         return True
