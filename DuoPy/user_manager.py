@@ -12,7 +12,7 @@ import logging
 
 
 class UserManager:
-    allowed_statuses = [
+    ALLOWED_STATUSES = [
         "active",
         "bypass",
         "locked out",
@@ -149,7 +149,7 @@ class UserManager:
         user_list = []
         for user in response:
             # TODO: Error-handling for invalid status
-            if status in UserManager.allowed_statuses and user["status"] == status:
+            if status in UserManager.ALLOWED_STATUSES and user["status"] == status:
                 user_list.append(
                     Users(
                         realname=user["realname"],
