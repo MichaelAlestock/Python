@@ -12,6 +12,13 @@ import logging
 
 
 class UserManager:
+    allowed_statuses = [
+        "active",
+        "bypass",
+        "locked out",
+        "disabled",
+        "pending deletion",
+    ]
 
     # internal function to create and return a Duo Admin client object
     # used to by all other functions to make API calls
