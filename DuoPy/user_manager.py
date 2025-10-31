@@ -148,7 +148,8 @@ class UserManager:
 
         user_list = []
         for user in response:
-            if user["status"] == status:
+            # TODO: Error-handling for invalid status
+            if status in UserManager.allowed_statuses and user["status"] == status:
                 user_list.append(
                     Users(
                         realname=user["realname"],
