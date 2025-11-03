@@ -1,8 +1,6 @@
-import duo_client
 from Utilities.secret_manager import SecretManager
 from Admin.Users.Users import Users
 from Utilities.utilities import Utilities
-import logging
 
 """
 # TODO: Flesh out UserManager class
@@ -20,30 +18,9 @@ class UserManager:
         "pending deletion",
     ]
 
-    # internal function to create and return a Duo Admin client object
-    # used to by all other functions to make API calls
-    # TODO: Implement a unit test to test credentials work
-    @staticmethod
-    def client_admin():
-        load_env = SecretManager.load_secret_information()
-
-        ikey = load_env.get("ikey")
-        skey = load_env.get("skey")
-        host = load_env.get("host")
-
-        if not all([ikey, skey, host]):
-            raise ValueError("Missing required credentials.")
-
-        return duo_client.Admin(
-            ikey=ikey,
-            skey=skey,
-            host=host,
-            sig_timezone="UTC",
-        )
-
     def get_users():
         try:
-            app = UserManager.client_admin()
+            app = SecretManager.client_admin()
             response = app.get_users()
 
             user_list = []
@@ -67,7 +44,7 @@ class UserManager:
             raise
 
     def get_users_by_status(status):
-        app = UserManager.client_admin()
+        app = SecretManager.client_admin()
         response = app.get_users()
 
         user_list = []
@@ -92,13 +69,14 @@ class UserManager:
 
     # TODO: Refactor to include error-handling for empty list
     def get_user_by_username(username):
-        app = UserManager.client_admin()
+        app = SecretManager.client_admin()
         response = app.get_users_by_name(username=username)
 
         user_list = []
         for user in response:
             user_list.append(
                 Users(
+                    user_id=user["user_id"],
                     realname=user["realname"],
                     username=user["username"],
                     email_address=user["email"],
@@ -114,7 +92,7 @@ class UserManager:
         return user_list[0]
 
     def get_user_by_phone_number(phone_number):
-        app = UserManager.client_admin()
+        app = SecretManager.client_admin()
         response = app.get_users_by_name(username=phone_number)
 
         user_list = []
@@ -137,7 +115,7 @@ class UserManager:
 
     # TODO: Is there a better way to do this? Seems like it could take a while to return
     def get_user_by_email_address(email_address):
-        app = UserManager.client_admin()
+        app = SecretManager.client_admin()
         response = app.get_users()
 
         user_list = []
