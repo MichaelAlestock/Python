@@ -19,18 +19,22 @@ class SecretManager:
 
     @staticmethod
     def get_matched_files():
+        """Returns a list of files matching the specified wildcard."""
         wildcard = f"{Utilities.script_root()}\\*.env"
         return glob(wildcard)
 
     @staticmethod
     def get_matched_file():
+        """Returns the first file in the list of matching files."""
         matches = SecretManager.get_matched_files()
         return matches[0] if matches else False
 
     def print_match():
+        """Prints the name of the matched file."""
         print(SecretManager.get_matched_file())
 
     def load_secret_information():
+        """Loads the environment file and creates a dict environment variables."""
         load_dotenv(SecretManager.get_matched_file())
 
         secret_dict = {
@@ -42,12 +46,14 @@ class SecretManager:
         return secret_dict
 
     def print_secret_information():
+        """Prints the environment variables that are currently loaded in memory."""
         load_env = SecretManager.load_secret_information()
         print(
             f"IKEY: [{load_env['ikey']}]\nSKEY: [{load_env['skey']}]\nHOST: [{load_env['host']}]"
         )
 
     def write_secret_information():
+        """Creates a new environment file that will contain client secrets."""
         # check file existence
         print("Checking if environment file exists...")
         if not SecretManager.get_matched_file():
