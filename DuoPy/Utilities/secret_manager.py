@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 from glob import glob
 from dotenv import load_dotenv
+import duo_client
 
 # my libs
 from Utilities.utilities import Utilities
