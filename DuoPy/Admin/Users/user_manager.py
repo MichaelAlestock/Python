@@ -25,6 +25,7 @@ class UserManager:
     # TODO: Implement a unit test to test credentials work
     @staticmethod
     def client_admin():
+        """Returns a Duo Client Admin object used to call the Duo API."""
         load_env = SecretManager.load_secret_information()
 
         ikey = load_env.get("ikey")
@@ -43,6 +44,7 @@ class UserManager:
 
     def get_users():
         try:
+            """Get a list of all users."""
             app = UserManager.client_admin()
             response = app.get_users()
 
@@ -67,6 +69,7 @@ class UserManager:
             raise
 
     def get_users_by_status(status):
+        """Get a list of users matching a specified status."""
         app = UserManager.client_admin()
         response = app.get_users()
 
@@ -92,6 +95,7 @@ class UserManager:
 
     # TODO: Refactor to include error-handling for empty list
     def get_user_by_username(username):
+        """Get a single user by username."""
         app = UserManager.client_admin()
         response = app.get_users_by_name(username=username)
 
@@ -114,6 +118,7 @@ class UserManager:
         return user_list[0]
 
     def get_user_by_phone_number(phone_number):
+        """Get a single user by phone number."""
         app = UserManager.client_admin()
         response = app.get_users_by_name(username=phone_number)
 
@@ -137,6 +142,7 @@ class UserManager:
 
     # TODO: Is there a better way to do this? Seems like it could take a while to return
     def get_user_by_email_address(email_address):
+        """Get a single user by email address."""
         app = UserManager.client_admin()
         response = app.get_users()
 
@@ -167,6 +173,7 @@ class UserManager:
             ierror.add_note(f"No user found with the email address [{email_address}].")
 
     def get_users_by_status(status):
+        """Get a list of users matching a specific status."""
         app = UserManager.client_admin()
         response = app.get_users()
 
