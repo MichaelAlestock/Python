@@ -68,28 +68,31 @@ class UserManager:
         return user_list
 
     # TODO: Refactor to include error-handling for empty list
-    def get_user_by_username(username):
-        app = SecretManager.client_admin()
-        response = app.get_users_by_name(username=username)
+    def get_user_by_username(username: str) -> Users | None:
+        try:
+            response = SecretManager.client_admin().get_users_by_name(username=username)
 
-        user_list = []
-        for user in response:
-            user_list.append(
-                Users(
-                    user_id=user["user_id"],
-                    realname=user["realname"],
-                    username=user["username"],
-                    email_address=user["email"],
-                    status=user["status"],
-                    created_on=Utilities.convert_to_dt(user["created"]),
-                    last_directory_sync=Utilities.convert_to_dt(
-                        user["last_directory_sync"]
-                    ),
-                    last_login=Utilities.convert_to_dt(user["last_login"]),
-                )
+            if not response:
+                raise IndexError("No users found in the response.")
+
+            first_object = response[0]
+
+            return Users(
+                user_id=first_object["user_id"],
+                realname=first_object["realname"],
+                username=first_object["username"],
+                email_address=first_object["email"],
+                status=first_object["status"],
+                created_on=Utilities.convert_to_dt(first_object["created"]),
+                last_directory_sync=Utilities.convert_to_dt(
+                    first_object["last_directory_sync"]
+                ),
+                last_login=Utilities.convert_to_dt(first_object["last_login"]),
             )
-        # TODO: Refactor to include error-handling in case this has more than 1 index
-        return user_list[0]
+
+        except IndexError:
+            print(f"No user found with the specified username [{username}].")
+            return None
 
     def get_user_by_phone_number(phone_number):
         app = SecretManager.client_admin()
