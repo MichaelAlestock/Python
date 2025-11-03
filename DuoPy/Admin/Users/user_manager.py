@@ -1,6 +1,6 @@
 import duo_client
-from secret_manager import SecretManager
-from Users import Users
+from Utilities.secret_manager import SecretManager
+from Admin.Users.Users import Users
 from Utilities.utilities import Utilities
 import logging
 
