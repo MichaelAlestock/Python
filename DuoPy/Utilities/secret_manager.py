@@ -17,6 +17,27 @@ class SecretManager:
         except StopIteration:
             return input(prompt)
 
+    # internal function to create and return a Duo Admin client object
+    # used to by all other functions to make API calls
+    # TODO: Implement a unit test to test credentials work
+    @staticmethod
+    def client_admin():
+        load_env = SecretManager.load_secret_information()
+
+        ikey = load_env.get("ikey")
+        skey = load_env.get("skey")
+        host = load_env.get("host")
+
+        if not all([ikey, skey, host]):
+            raise ValueError("Missing required credentials.")
+
+        return duo_client.Admin(
+            ikey=ikey,
+            skey=skey,
+            host=host,
+            sig_timezone="UTC",
+        )
+
     @staticmethod
     def get_matched_files():
         wildcard = f"{Utilities.script_root()}\\*.env"
