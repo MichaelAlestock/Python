@@ -77,18 +77,7 @@ class UserManager:
 
             first_object = response[0]
 
-            return Users(
-                user_id=first_object["user_id"],
-                realname=first_object["realname"],
-                username=first_object["username"],
-                email_address=first_object["email"],
-                status=first_object["status"],
-                created_on=Utilities.convert_to_dt(first_object["created"]),
-                last_directory_sync=Utilities.convert_to_dt(
-                    first_object["last_directory_sync"]
-                ),
-                last_login=Utilities.convert_to_dt(first_object["last_login"]),
-            )
+            return Users.build_object(first_object)
 
         except IndexError:
             print(f"No user found with the specified username [{username}].")
