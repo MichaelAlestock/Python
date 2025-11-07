@@ -87,25 +87,46 @@ class UserManager:
         app = SecretManager.client_admin()
         response = app.get_users_by_name(username=phone_number)
 
-        user_list = []
-        for user in response:
-            user_list.append(
-                Users(
-                    realname=user["realname"],
-                    username=user["username"],
-                    email_address=user["email"],
-                    status=user["status"],
-                    created_on=Utilities.convert_to_dt(user["created"]),
-                    last_directory_sync=Utilities.convert_to_dt(
-                        user["last_directory_sync"]
-                    ),
-                    last_login=Utilities.convert_to_dt(user["last_login"]),
-                )
-            )
-        # TODO: Refactor to include error-handling in case this has more than 1 index
-        return user_list[0]
-
     # TODO: Is there a better way to do this? Seems like it could take a while to return
+    def get_user_by_email_address(
+        email_address="", email_address_list=[]
+    ) -> Users | None:
+        try:
+            response_list = list()
+
+            if len(email_address_list) > 0:
+                for email in email_address_list:
+                    email_response = SecretManager.client_admin().get_user_by_email(
+                        email=email
+                    )
+
+                    if not email_response:
+                        raise IndexError(f"No objects returned in response.")
+
+                    inside_array = email_response[0]
+
+                    response_list.append(Users.build_object(inside_array))
+                return response_list
+            else:
+                response = SecretManager.client_admin().get_user_by_email(
+                    email=email_address
+                )
+
+                if not response:
+                    raise IndexError(
+                        f"User with email address [{email_address}] was not found in directory."
+                    )
+
+                inside_array = response[0]
+
+                return Users.build_object(inside_array)
+
+        except IndexError:
+            print(
+                f"User with email address [{email_address}] was not found in directory."
+            )
+            return None
+
     def sync_user(username: str) -> None:
         # Grab dkey from secrets
         try:
