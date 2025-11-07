@@ -1,6 +1,8 @@
 from Utilities.utilities import Utilities
 
 
+# TODO: Add a whole lot more properties to this
+#       - Add nearly all returned properties
 class Users:
     def __init__(
         self,

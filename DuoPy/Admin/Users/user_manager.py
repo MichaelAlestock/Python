@@ -80,10 +80,6 @@ class UserManager:
             print(f"No user found with the specified username [{username}].")
             return None
 
-    def get_user_by_phone_number(phone_number):
-        app = SecretManager.client_admin()
-        response = app.get_users_by_name(username=phone_number)
-
     # TODO: Is there a better way to do this? Seems like it could take a while to return
     def get_user_by_email_address(
         email_address="", email_address_list=[]
@@ -167,4 +163,3 @@ class UserManager:
             )
         except RuntimeError:
             print(f"User [{username}] not found in directory.")
-

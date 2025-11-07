@@ -1,4 +1,4 @@
-from .secret_manager import SecretManager
+from .Utilities.secret_manager import SecretManager
 
 repr(SecretManager)
 
