@@ -1,7 +1,7 @@
-from .secret_manager import secret_manager
+from .Utilities.secret_manager import SecretManager
 
-repr(secret_manager)
+repr(SecretManager)
 
-from .Utilities.utilities import utilities
+from .Utilities.utilities import Utilities
 
-repr(utilities)
+repr(Utilities)

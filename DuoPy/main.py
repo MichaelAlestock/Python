@@ -1,10 +1,10 @@
-from secret_manager import secret_manager
+from Utilities.secret_manager import SecretManager
+from Admin.Users.user_manager import UserManager
 
-env_match = secret_manager.get_matched_file
+# UserManager.sync_user("mmedeiros")
+# UserManager.update_user_status("malestock", "active")
+# print(UserManager.get_user_by_email_address(email_address="alestockm@gnmhc.org"))
+users = UserManager.get_users_by_status("bypass")
 
-if not env_match:
-    secret_manager.write_secret_information()
-else:
-    print("It's working baby!")
-    secret_manager.print_match()
-    secret_manager.print_secret_information()
+for user in users:
+    print(f"{user}\n")
