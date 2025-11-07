@@ -43,29 +43,26 @@ class UserManager:
             generic_error.add_note("No results returned.")
             raise
 
-    def get_users_by_status(status):
-        app = SecretManager.client_admin()
-        response = app.get_users()
+    def get_users_by_status(status) -> Users | None:
 
-        user_list = []
-        for user in response:
-            # TODO: Error-handling for invalid status
-            if status in UserManager.ALLOWED_STATUSES and user["status"] == status:
-                user_list.append(
-                    Users(
-                        realname=user["realname"],
-                        username=user["username"],
-                        email_address=user["email"],
-                        status=user["status"],
-                        created_on=Utilities.convert_to_dt(user["created"]),
-                        last_directory_sync=Utilities.convert_to_dt(
-                            user["last_directory_sync"]
-                        ),
-                        last_login=Utilities.convert_to_dt(user["last_login"]),
-                    )
-                )
-        # TODO: Refactor to include error-handling in case this has more than 1 index
-        return user_list
+        try:
+            response = SecretManager.client_admin().get_users()
+            user_list = []
+
+            # List will return None which is False
+            # If response is empty
+            if not response:
+                raise IndexError("No users found in the response")
+
+            for user in response:
+                if user["status"] == status:
+                    user_list.append(Users.build_object(user))
+
+            return user_list
+
+        except IndexError:
+            print(f"No users found matching the status: [{status}].")
+            return None
 
     # TODO: Refactor to include error-handling for empty list
     def get_user_by_username(username: str) -> Users | None:
