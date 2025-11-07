@@ -127,6 +127,30 @@ class UserManager:
             )
             return None
 
+    def update_user_status(username: str, status):
+        # Obtain user
+        try:
+            user_information = UserManager.get_user_by_username(username=username)
+
+            current_user_status = user_information.status
+            current_user_id = user_information.user_id
+
+            if status not in UserManager.ALLOWED_STATUSES:
+                raise Exception(f"[{status}] not an acceptable status.")
+
+            if current_user_status != status:
+                response = SecretManager.client_admin().update_user(
+                    user_id=current_user_id, status=status
+                )
+
+                if not response:
+                    raise IndexError("")
+
+                print(f"{user_information.realname} has been successfully updated.")
+
+        except RuntimeError:
+            print(f"No user found with the user_id: [{user_information.user_id}]")
+
     def sync_user(username: str) -> None:
         # Grab dkey from secrets
         try:
