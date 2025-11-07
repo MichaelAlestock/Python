@@ -59,6 +59,7 @@ class SecretManager:
             "ikey": os.getenv("IKEY", ""),
             "skey": os.getenv("SKEY", ""),
             "host": os.getenv("HOST", ""),
+            "dkey": os.getenv("DKEY", ""),
         }
 
         return secret_dict
@@ -66,7 +67,7 @@ class SecretManager:
     def print_secret_information():
         load_env = SecretManager.load_secret_information()
         print(
-            f"IKEY: [{load_env['ikey']}]\nSKEY: [{load_env['skey']}]\nHOST: [{load_env['host']}]"
+            f"IKEY: [{load_env['ikey']}]\nSKEY: [{load_env['skey']}]\nDKEY: [{load_env['dkey']}]\nHOST: [{load_env['host']}]"
         )
 
     def write_secret_information():
@@ -95,12 +96,18 @@ class SecretManager:
 
         ikey = SecretManager.get_next_argv("Enter your integration key: ")
         skey = SecretManager.get_next_argv("Enter your secret key: ")
+        dkey = SecretManager.get_next_argv("Enter your directory key: ")
         hostname = SecretManager.get_next_argv("Enter the hostname: ")
 
         print(f"Environment file successfully created in [{Utilities.script_root()}].")
 
         with open(f"{new_file_path}.env", mode="w+t") as file:
-            file.write(f"IKEY='{ikey}'\n" f"SKEY='{skey}'\n" f"HOST='{hostname}'")
+            file.write(
+                f"IKEY='{ikey}'\n"
+                f"SKEY='{skey}'\n"
+                f"DKEY='{dkey}'\n"
+                f"HOST='{hostname}'"
+            )
             print(
                 f"Environment variables successfully written to [{new_file_path}.env]"
             )
